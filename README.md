@@ -1,6 +1,8 @@
 # discord_export
 A module that lets you export messages from a Discord channel into an HTML file that just looks like Discord.
 
+Live example: https://fileviewer.janvh.tk/?url=https://cdn.discordapp.com/attachments/1051975314915463268/1052185148235468851/jvh-68934-transcript.html
+
 ## Usage
 ```py
 import chat_exporter
