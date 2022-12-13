@@ -18,6 +18,8 @@ async def save_chat(ctx):
     transcript = await chat_exporter.export(ctx.channel, favicon, limit, timezone)
     transcript_file = discord.File(BytesIO(transcript.encode()), filename=f"{ctx.channel.name}-transcript.html")
     await ctx.author.send(file=transcript_file)
+
+bot.run("TOKEN")
 ```
 
 ## Copyright Notice
