@@ -7,7 +7,7 @@ import chat_exporter
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix=("!",), intents=discord.Intents.all(), case_insensitive=True)
+bot = commands.Bot(command_prefix=("!"), intents=discord.Intents.all(), case_insensitive=True)
 
 @commands.command()
 async def save_chat(ctx):
