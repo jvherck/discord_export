@@ -4,7 +4,7 @@ from .build_html import fill_out, img_attachment, msg_attachment, audio_attachme
 
 
 class BuildAttachment:
-    image_types = ".png", ".jpeg", ".jpg", ".gif"
+    image_types = ".png", ".jpeg", ".jpg", ".gif", ".webp"
     audio: str = ""
     file_icon: str = ""
 

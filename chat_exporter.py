@@ -31,13 +31,13 @@ def init_exporter(_bot):
 
 async def export(
     channel: discord.TextChannel,
-    botuser: discord.User | discord.Member,
+    favicon: str,
     limit: int = None,
     set_timezone="Europe/London"
 ):
     # noinspection PyBroadException
     try:
-        return (await Transcript.export(channel, limit, botuser, set_timezone)).html
+        return (await Transcript.export(channel, limit, favicon, set_timezone)).html
     except Exception:
         traceback.print_exc()
         print(f"Please send a screenshot of the above error to https://www.github.com/mahtoid/DiscordChatExporterPy")
@@ -46,11 +46,12 @@ async def export(
 async def raw_export(
     channel: discord.TextChannel,
     messages: List[discord.Message],
+    favicon: str,
     set_timezone: str = "Europe/London"
 ):
     # noinspection PyBroadException
     try:
-        return (await Transcript.raw_export(channel, messages, set_timezone)).html
+        return (await Transcript.raw_export(channel, messages, favicon, set_timezone)).html
     except Exception:
         traceback.print_exc()
         print(f"Please send a screenshot of the above error to https://www.github.com/mahtoid/DiscordChatExporterPy")
@@ -59,7 +60,7 @@ async def raw_export(
 async def quick_export(ctx):
     # noinspection PyBroadException
     try:
-        transcript = await Transcript.export(ctx.channel, None, "Europe/London")
+        transcript = await Transcript.export(ctx.channel, None, None, "Europe/London")
     except Exception:
         traceback.print_exc()
         error_embed = discord.Embed(
@@ -97,7 +98,7 @@ class Transcript:
     guild: discord.Guild
     channel: discord.TextChannel
     messages: List[discord.Message]
-    botuser: (discord.User, discord.Member)
+    favicon: str
     timezone_string: str
     html: Optional[str] = None
 
@@ -106,7 +107,7 @@ class Transcript:
         cls,
         channel: discord.TextChannel,
         limit: Optional[int],
-        botuser: (discord.User, discord.Member),
+        favicon: str,
         timezone_string: str = "Europe/London"
     ) -> "Transcript":
         if limit:
@@ -119,7 +120,7 @@ class Transcript:
             channel=channel,
             guild=channel.guild,
             messages=messages,
-            botuser=botuser,
+            favicon=favicon,
             timezone_string=timezone(timezone_string)
         ).build_transcript()
 
@@ -130,7 +131,7 @@ class Transcript:
         cls,
         channel: discord.TextChannel,
         messages: List[discord.Message],
-        botuser: (discord.User, discord.Member),
+        favicon: str,
         timezone_string: str = 'Europe/London'
     ) -> "Transcript":
         messages.reverse()
@@ -139,7 +140,7 @@ class Transcript:
             channel=channel,
             guild=channel.guild,
             messages=messages,
-            botuser=botuser,
+            favicon=favicon,
             timezone_string=timezone(timezone_string)
         ).build_transcript()
 
@@ -171,15 +172,10 @@ class Transcript:
 
         guild_name = html.escape(self.guild.name)
 
-        try:
-            site_icon = str(self.botuser.avatar_url)
-        except:
-            site_icon = str(guild_icon)
-
         self.html = await fill_out(self.guild, total, [
             ("SERVER_NAME", guild_name),
             ("SERVER_AVATAR_URL", str(guild_icon), PARSE_MODE_NONE),
-            ("SITE_ICON", site_icon, PARSE_MODE_NONE),
+            ("SITE_ICON", self.favicon if self.favicon else "", PARSE_MODE_NONE),
             ("CHANNEL_NAME", self.channel.name),
             ("MESSAGE_COUNT", str(len(self.messages))),
             ("MESSAGES", message_html, PARSE_MODE_NONE),
